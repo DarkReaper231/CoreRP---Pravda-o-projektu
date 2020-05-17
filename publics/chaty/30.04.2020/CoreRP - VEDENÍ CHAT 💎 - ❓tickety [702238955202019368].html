@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CoreRP - ❓tickety</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/669927145505554462/a_5d8a7ebd6242406b2afe68b018a7ef4d.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">CoreRP</div>
+        <div class="preamble__entry">VEDEN&#205; CHAT &#128142; / ❓tickety</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">21-Apr-20 09:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="702239179009949796" id="message-702239179009949796">
+                <div class="chatlog__content">
+                    <div class="markdown">Ticket od : Logas
+T&#233;ma : Community Ticket - Report<span class="chatlog__edited-timestamp" title="21-Apr-20 09:28 PM">(edited)</span></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/702238955202019368/702239178804691005/Document_5.pdf">
+                        
+                            Attachment: Document_5.pdf (304,31 KB)
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="schvaleno" title="schvaleno" src="https://cdn.discordapp.com/emojis/690009273379586058.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">22-Apr-20 12:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="702467920952819742" id="message-702467920952819742">
+                <div class="chatlog__content">
+                    <div class="markdown">Tixket od : mouzis
+Tema : QP
+Ticket:Zdrav&#237;m chtěl bych zaž&#225;dat o přidani  10 000 queue points,pen&#237;ze jsem poslal tak že by tam měli b&#253;t děkuji
+Steam hex : 11000010adc929e<span class="chatlog__edited-timestamp" title="22-Apr-20 12:41 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="schvaleno" title="schvaleno" src="https://cdn.discordapp.com/emojis/690009273379586058.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="702468386801582120" id="message-702468386801582120">
+                <div class="chatlog__content">
+                    <div class="markdown">--------------------------
+Ticket od : Marty
+T&#233;ma : report na heače - community ticket
+Čauko, chcel by som podať report na hr&#225;ča Jungkook ktor&#253; asi na streame započul že m&#225; dostať CK lebo rpil hovn&#225; a o p&#225;r hod&#237;n nato si pozastavil postavu. Beriem to ako vyh&#253;banie RP a pozastavenie postavy z d&#244;vody vyhnutia sa RP. 
+
+D&#244;kaz:</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702468400068296774" id="message-702468400068296774">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/702238955202019368/702468399728427048/image0.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/702238955202019368/702468399728427048/image0.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="schvaleno" title="schvaleno" src="https://cdn.discordapp.com/emojis/690009273379586058.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/249187055555313665/3f955469057f33b4c1ba206c6d88f7d1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="gUcioQQ#9792" data-user-id="249187055555313665"  style="color: rgb(255, 0, 230)" >gUcio</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 12:13 AM</span>
+
+            <div class="chatlog__message " data-message-id="702643166305714256" id="message-702643166305714256">
+                <div class="chatlog__content">
+                    <div class="markdown">Ticket od: mně
+T&#233;ma: leteck&#233; rp
+
+Ticket:
+
+Zdrav&#237;m psal mi Jusso že by se r&#225;d vr&#225;til na rp a že by r&#225;d rpil jako old Times kdy dělal pilota a l&#237;tal pro castelli soukrom&#233; lety sem tam něco ilegal. Hodně by to posunulo naše rp v tom high end stylu a hlavně Jusso je irl pilot a ic se bav&#237;me s Jirkou že by si chtěl udělat taky pilotn&#237; sem mu ř&#237;kal jojo firma zaplat&#237; a tak. Nev&#237; jak to chcete dělat do budoucna toto ty leteck&#233; ale Jusso by ic zat&#237;m mohl Jirku l&#233;tat mohlo by to b&#253;t TOP RP jak pro n&#225;s tak pro Jirku. Jusso by byl firmne pilot chci se zeptat d&#225; se nějak v rp zař&#237;dit helikopt&#233;ra sou sice v pdm ale ty ceny uuuu je to dobre ofc ale pt&#225;m se jedtli tu nen&#237; nějak&#233; ulehčen&#237; že by třeba Jusso už měl svoji nebo něco takov&#233;ho pokud ne hold budeme šetřit na ni <img class="emoji " alt="🤷" title="🤷" src="https://twemoji.maxcdn.com/2/72x72/1f937.png">‍♂️<img class="emoji " alt="😂" title="😂" src="https://twemoji.maxcdn.com/2/72x72/1f602.png">.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 03:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="702873419657773177" id="message-702873419657773177">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" style="color: rgb(52, 152, 219); background-color: rgba(52, 152, 219, 0.1);">@&#128142; COMMUNITY ADMIN</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 04:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="702891265208877056" id="message-702891265208877056">
+                <div class="chatlog__content">
+                    <div class="markdown">-
+Nabindnes v 14:34
+Ahoj Ozzy, ned&#225;vno mi byla schv&#225;len&#225; postava rusa, ačkoliv oni přestali hr&#225;t a j&#225; pro tuto postavu nyn&#237; nevid&#237;m využit&#237;, mysl&#237;š si, že by bylo možn&#233; tuto postavu vyměnit za jinou, pro kter&#233; j&#225; najdu využit&#237; a prakticky bude taky jako neleg&#225;ln&#237; postava?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702891350181412885" id="message-702891350181412885">
+                <div class="chatlog__content">
+                    <div class="markdown">--------------------------
+Serpentindnes v 15:59
+REPORT:
+Dobr&#253; deň, r&#225;d by som podal report na hr&#225;ča LOGAS z d&#244;vodu podozrenia na nepovolen&#253; gross a mixing.
+
+Je tu p&#225;r d&#244;vodov. Mixuje ooc veci resp. vztahy a jeho ego do IC. Prv&#253; kr&#225;t provokuje Yung Thaye, nad&#225;va na jeho IC priateľku a vyvol&#225;va konflikt ktor&#253; 
+vyust&#237; k h&#225;dke na tuning zraze od rusov. Hlavne asi neuniesli to, že niekto po nich krič&#237;. Ale to by sa dalo. Ale sk&#244;r ide o to, že Logas neust&#225;le vyvol&#225;va/vyvol&#225;val
+h&#225;dky jak na našom discorde alebo na corovom v gener&#225;li. H&#225;dal sa už skoro zo všetk&#253;mi. A yung je toho pr&#237;kladom. Neust&#225;le ur&#225;ža jak členov tak jeho frakciu. Neviem presne
+jeho probl&#233;m ale niečo si asi potrebuje dok&#225;zať. Počas toho ako bol vo frakcii a nechal sa zmanipolvať od T&#253;ny skrz to aby mi dal CK a pravdepodobne chcel t&#253;m potopiť frakciu.
+Potom to sa to ešte vyustilo keď sme zamietli to aby sa vr&#225;til znova do frakcie. Ur&#225;žky boli st&#225;le. Dostal kick, ale začal n&#225;s ur&#225;zať na in&#253;ch discordoch a IC-čkovo proti
+n&#225;m st&#225;le ide.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702891353864011836" id="message-702891353864011836">
+                <div class="chatlog__content">
+                    <div class="markdown">To že odp&#225;li cisternu kv&#244;li tomu že niekto zv&#253;ši hlas je prepal. Odozva na niečo tak&#233; je moc plus t&#225; vec že Logas m&#225; potrebu vždy h&#225;dať s niekym z n&#225;s a dokazovať si niečo IC.
+Po tom ako sa IC zistilo že to boli oni tak podla streamu Ballas odpojili a jungkook si zmenil postavu za žida. Ďalšia vec je to keď sa zastavili 2ja členovia Ballas a ihneď
+reagovali streľbov z dialnici s AKčkami.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702891396109041694" id="message-702891396109041694">
+                <div class="chatlog__content">
+                    <div class="markdown">Ďalšia vec je to jak ostrihali Jirku Kr&#225;le do hola. Pokiaľ viem tak by to ešte malo spadať pod Gross, pokiaľ sa to nemenilo postupom času.
+Každop&#225;dne. Logas ako osoba ktor&#253; vyvol&#225;va neust&#225;le konflikty medzi členmi jak Solomons frakce tak hr&#225;čmi na core v gener&#225;li. Neust&#225;le &quot;zapalovanie&quot; či ur&#225;žky na naše osoby.
+Neskutočn&#233; boostovanie ega ktor&#233; pren&#225;ša do IC. Naberianie členov do Ballas ktor&#253; automaticky id&#250; proti n&#225;m. Ovplivnovanie OOC ktor&#233; vedie zas a len na n&#225;s. Neviem prečo
+ale chce za každ&#250; cenu zničiť cel&#250; frakciu. Neust&#225;ly stream snipe, snaď cel&#253; deň pozer&#225; jak Jirku Kr&#225;le tak Dreama. Po tom si urob&#237; XY klipov aj na tie najmenšie &quot;pičoviny&quot; 
+(prep&#225;čte za vulgarizmus) A hneď p&#237;še report. Hľad&#225; každ&#250; skulinku ktor&#225; nemus&#237; byť ani pravdiv&#225; aby mohol vybavovať frakciu alebo IC zničiť členov.
+
+Bohužiaľ tento človek ktor&#253; ide cez mŕtvoli jak proti Coru tak proti našej frakcii či osob&#225;m kv&#244;li OOC vzťahom si nezasl&#250;ži tu byť a pokračovať ako hr&#225;č. 
+
+Ďakujem.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/407236302724005889/0f9e51ed0889c4a294b582fa85d2a63f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MadMick#0773" data-user-id="407236302724005889"  style="color: rgb(52, 152, 219)" >MadMick</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 05:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="702897887054659615" id="message-702897887054659615">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" style="color: rgb(52, 152, 219); background-color: rgba(52, 152, 219, 0.1);">@&#128142; COMMUNITY ADMIN</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 05:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="702902283666456636" id="message-702902283666456636">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Humor#8888">@humor</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702903027530727514" id="message-702903027530727514">
+                <div class="chatlog__content">
+                    <div class="markdown">Dodatok k reportu na Logasa
+
+Ďalšia vec je, že si zač&#237;na vym&#253;šľať. Toto je už moc. Nechcem znieť ako v afekte alebo podobne. Ale tieto v&#253;mysli ktor&#233; s&#250; v report (viz. fotka) je už fakt moc. Už len to že st&#225;le si berie do &#250;st jak mňa tak ostatn&#253;ch aby n&#225;s potopil je moc. A st&#225;le si stoj&#237;m u toho že toto nieje hr&#225;č ale len niekto kto chce potopiť projekt. Kľudne p&#244;jdeme s Pavlinou do vedenia. Ona vie najlepšie že to všetko vedela od Engetsua.
+<a href="https://cdn.discordapp.com/attachments/563673397347876869/702886841698877550/unknown.png">https://cdn.discordapp.com/attachments/563673397347876869/702886841698877550/unknown.png</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/563673397347876869/702886841698877550/unknown.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/563673397347876869/702886841698877550/unknown.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Patriczech#9467" data-user-id="353848965361565696"  style="color: rgb(52, 152, 219)" >Patriczech</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 06:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="702917061856329868" id="message-702917061856329868">
+                <div class="chatlog__content">
+                    <div class="markdown">Fakt nem&#225; co na pr&#225;ci tento člověk</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">26-Apr-20 09:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="704056753372921896" id="message-704056753372921896">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="gUcioQQ#9792">@gUcio</span> Už by měli fungovat tickety</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 15 message(s)</div>
+</div>
+
+</body>
+</html>

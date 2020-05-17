@@ -1,0 +1,3520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CoreRP - ⏰ban-list</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/669927145505554462/a_5d8a7ebd6242406b2afe68b018a7ef4d.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">CoreRP</div>
+        <div class="preamble__entry">VEDEN&#205; CHAT &#128142; / ⏰ban-list</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/259359837870096385/95037b7c74ac4c4922d7e5055fe53d28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just Jenny#3517" data-user-id="259359837870096385"  style="color: rgb(241, 196, 15)" >Just Jenny</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 06:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="669951979707039764" id="message-669951979707039764">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/669951979371364362/Ban_List_Roomka.txt">
+                        
+                            Attachment: Ban_List_Roomka.txt (15,76 KB)
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/334339295622070272/13e970564f74c1359cfe960975fff68c.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="yukon#7337" data-user-id="334339295622070272"  style="color: rgb(255, 255, 255)" >yukon</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 06:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="669953247867437066" id="message-669953247867437066">
+                <div class="chatlog__content">
+                    <div class="markdown">Otrokk06.10.2019
+<strong>Crycozz</strong>
+<strong>DobrcOfficial</strong> - Dvojt&#253;ždňov&#253; ban (po t&#253;ždni si m&#244;žu požiadať o unban) - Trash RP, NonRP Driving, Trolling a ďalšie veci, ktor&#233; nemaj&#250; s RP nič spoločn&#233;
+ 
+「Pernik」06.10.2019
+<strong>Fledroušek</strong> perma reklama
+
+ 
+「Pernik」06.10.2019
+<strong>TomasiiiiKK</strong> - blacklist - je to p&#237;ča
+ 
+Pav06.10.2019
+<strong>WolframCZ</strong> - kr&#225;dež PD auta bez RP důvodu, failRP - 14 dn&#237;.
+ 
+OzZy08.10.2019
+<strong>@Snigis#9724</strong> - Reklama do PM hr&#225;čům, - Perma ban
+zabanovat ve hře pros&#237;m někoho
+ 
+Plam&#237;nkov&#225; 10.10.2019
+<strong>@Ico</strong> - EjKejEj
+
+NonRP driving - skakal autem po rampe, neerpeni mechaniky hry, mixing
+
+4 dny
+ 
+Clayia 10.10.2019
+<strong>@Kr&#225;ťa </strong>
+BAN 30 dn&#237; - vzhledem k předchoz&#237;m prohřeškům (možnost pož&#225;d&#225;t o unban po uplynut&#237; 14 dn&#237;)
+- copbaiting
+- arogantn&#237; chov&#225;n&#237; ve veden&#237;
+ 
+「Pernik」10.10.2019
+<strong>ItzHuNT_CZE</strong> - GGRP ?? Galaxy RP??
+nev&#237;m co to je, tohle mi přist&#225;lo v PM a mluv&#237; to asi za vše, obr&#225;zek si udělejte sami
+
+ 
+Clayia 10.10.2019
+<strong>maryaless</strong>- 3 t&#253;dny
+- Neznalost pravidel pro streamery - Nemutl se, když byl ve veden&#237;
+- Copbaiting, NoFear RP
+ 
+Luckeers 11.10.2019
+<strong>@Gorry</strong> - repohovor 12.10. , @Dudis Morningstar @Dusk0  - Repohovor - Spamm na TSku<span class="chatlog__edited-timestamp" title="23-Jan-20 06:20 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953416826585130" id="message-669953416826585130">
+                <div class="chatlog__content">
+                    <div class="markdown">Clayia 11.10.2019
+<strong>DannyRP</strong>
+- opakovan&#253; metagaming
+- fail RP, nofear RP
+
+2 měs&#237;ce (možnost pož&#225;d&#225;t v polovině o unban)
+ 
+Luckeers 12.10.2019
+<strong>@lacomajsner</strong>
+
+- Donutil PyroSharka, aby mu předal 2 VIP auta, ten pod n&#225;tlakem předal, upozornil ho i na to, že je to zak&#225;zan&#233;. (diplomme potvrdil)
+- Frakce Qualdin Qay sepsan&#225; lacem, veden&#225; lacem, obejit&#237; admin teamu, že ž&#225;dost psal Mikee
+- &#250;stavičn&#233; lhan&#237; i přes jasn&#233; důkazy a dosvědčen&#237; v&#237;ce lidmi
+2 měs&#237;ce(možnost po polovině pož&#225;dat o unban)
+ 
+「Pernik」12.10.2019
+
+Seknwte ho pls
+ 
+Luckeers12.10.2019
+<strong>@Radovan Putin#6788</strong>
+
+- Perma - reklama do PM
+ 
+Luckeers 13.10.2019
+<strong>@Frejz</strong>
+- Nedošel do ček&#225;rny veden&#237;, &#250;myslně 
+- Z důvodů bezpečnosti našeho serveru a vyhnut&#237; se ,,žaloby&quot; od frejze, jsme se rozhodli, že mu bude zak&#225;z&#225;n př&#237;stup na n&#225;š server, protože sv&#253;m streamem na n&#225;s takt&#233;ž vyděl&#225;v&#225;, a museli bychom omezit všechny streamery, proto, aby tady mohl hr&#225;t. 
+
+- Permaban
+ 
+Andrew 13.10.2019
+<strong>@iVolneck_</strong>
+#1831
+-Lže o věku do formul&#225;řů, pokažd&#233; vypln&#237; formul&#225;ř  s jin&#253;m věkem 
+
+-Blacklist, Permaban na pohovor
+ 
+Luckeers 14.10.2019
+<strong>@Bonf1</strong>
+- Obch&#225;zen&#237; pravidel formul&#225;ře
+- Psan&#237; si o roli ček&#225; na pohovor, bez &#250;spěšn&#233;ho projit&#237; formul&#225;řem
+- Zabanov&#225;n na discordu
+ 
+Pav 15.10.2019
+<span class="mention" title="Dave &#128074;&#127995;#4268">@Dave &#128074;&#127995;</span> - 3 dny, non-rp driving<span class="chatlog__edited-timestamp" title="23-Jan-20 06:21 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953454772584488" id="message-669953454772584488">
+                <div class="chatlog__content">
+                    <div class="markdown">Pav 15.10.2019
+<strong>@MrChenk</strong> - 2 měs&#237;ce; mlžen&#237; AT, pravideln&#253; copbaiting, opakovan&#225; recidiva, neznalost pravidel, sral mě
+ 「Pernik」17.10.2019
+tři nuly - repohovor
+- provokace AT
+- opakovan&#233; rozj&#237;žděn&#237; dram&#237;ček, nav&#225;žen&#237; se do ostatn&#237;ch hr&#225;čů
+- neznalost pravidel (leg&#225;lka nesm&#237; dělat neleg&#225;ln&#237; věci)
+ 
+Pav 17.10.2019
+<strong>PlayManElite</strong> - 3 t&#253;dny
+ 
+Luckeers20.10.2019
+<strong>@Trochu</strong>
+- Neadekv&#225;tn&#237; RP zraněn&#237;
+- Porušen&#237; revenge killu
+- Lhan&#237; do /do
+- Fail RP
+- Vyh&#253;b&#225;n&#237; se RPčku - value of life(nev&#225;ž&#237; si života)
+- Fear RP
+
+1. Měs&#237;c, možnost po 14 dnech na ž&#225;dost o unban
+ 
+&quot;<img class="emoji " alt="🅹" title="🅹" src="https://twemoji.maxcdn.com/2/72x72/1f179.png"><img class="emoji " alt="🅰" title="🅰" src="https://twemoji.maxcdn.com/2/72x72/1f170.png">️<img class="emoji " alt="🆈" title="🆈" src="https://twemoji.maxcdn.com/2/72x72/1f188.png"><img class="emoji " alt="🅷" title="🅷" src="https://twemoji.maxcdn.com/2/72x72/1f177.png"><img class="emoji " alt="🅰" title="🅰" src="https://twemoji.maxcdn.com/2/72x72/1f170.png">️<img class="emoji " alt="🆆" title="🆆" src="https://twemoji.maxcdn.com/2/72x72/1f186.png"><img class="emoji " alt="🅺" title="🅺" src="https://twemoji.maxcdn.com/2/72x72/1f17a.png">&quot;21.10.2019
+<strong>@<img class="emoji " alt="𝓕" title="𝓕" src="https://twemoji.maxcdn.com/2/72x72/1d4d5.png"><img class="emoji " alt="𝓻" title="𝓻" src="https://twemoji.maxcdn.com/2/72x72/1d4fb.png"><img class="emoji " alt="𝓪" title="𝓪" src="https://twemoji.maxcdn.com/2/72x72/1d4ea.png"><img class="emoji " alt="𝓷" title="𝓷" src="https://twemoji.maxcdn.com/2/72x72/1d4f7.png"><img class="emoji " alt="𝔃" title="𝔃" src="https://twemoji.maxcdn.com/2/72x72/1d503.png"><img class="emoji " alt="𝔂" title="𝔂" src="https://twemoji.maxcdn.com/2/72x72/1d502.png">5</strong>
+opakovan&#233; spamov&#225;n&#237; formul&#225;ře na foru
+- perma
+ 
+「Pernik」21.10.2019
+<strong>Deadsock</strong> - 14 dn&#237;, hlan&#237; do  /do
+(měl u sebe přes 100k, přiznal 20, tvrdil že nem&#225; kl&#237;če od dvěř&#237;, kter&#233; před&#237;tm i potom odemykal bez rp - běžn&#237; dveře mezi kř&#237;dly ambualnce, kter&#233; maj&#237; všichni zaměstnanci)
+ 
+Luckeers24.10.2019
+<strong>@pavlovski</strong>
+Neznalost RP bez př&#237;tomnosti EMS - posl&#225;n na repohovor
+ 
+Clayia 26.10.2019
+<strong>@Young Desert  - Desert</strong>
+<strong>@❤️U_good❤️</strong>
+<strong>@ZoNDy</strong>
+
+Neerpen&#237; zraněn&#237;, fail RP - sražen&#237; autem, ignorov&#225;n&#237; situace, lhan&#237; AT
+
+2 t&#253;dny<span class="chatlog__edited-timestamp" title="23-Jan-20 06:22 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953491225149491" id="message-669953491225149491">
+                <div class="chatlog__content">
+                    <div class="markdown">Luckeers 26.10.2019
+<strong>@KoreanPizzaBoy</strong>
+N Word před xx lidma
+T&#253;den
+ 
+Luckeers 27.10.2019
+<strong>@Timeček </strong>
+- Advertising 
+Perma
+<a href="https://cdn.discordapp.com/attachments/546774375030980618/637957010473615370/Snimek_obrazovky_2019-10-27_v_11.12.09.png">https://cdn.discordapp.com/attachments/546774375030980618/637957010473615370/Snimek_obrazovky_2019-10-27_v_11.12.09.png</a>
+
+ 
+Gbelik 28.10.2019
+<strong><img class="emoji " alt="👑" title="👑" src="https://twemoji.maxcdn.com/2/72x72/1f451.png"> <img class="emoji " alt="𝓢" title="𝓢" src="https://twemoji.maxcdn.com/2/72x72/1d4e2.png"><img class="emoji " alt="𝓽" title="𝓽" src="https://twemoji.maxcdn.com/2/72x72/1d4fd.png"><img class="emoji " alt="𝓲" title="𝓲" src="https://twemoji.maxcdn.com/2/72x72/1d4f2.png"><img class="emoji " alt="𝓵" title="𝓵" src="https://twemoji.maxcdn.com/2/72x72/1d4f5.png"><img class="emoji " alt="𝓮" title="𝓮" src="https://twemoji.maxcdn.com/2/72x72/1d4ee.png"><img class="emoji " alt="𝓽" title="𝓽" src="https://twemoji.maxcdn.com/2/72x72/1d4fd.png"><img class="emoji " alt="𝓸" title="𝓸" src="https://twemoji.maxcdn.com/2/72x72/1d4f8.png"> <img class="emoji " alt="𝐑" title="𝐑" src="https://twemoji.maxcdn.com/2/72x72/1d411.png"><img class="emoji " alt="𝐞" title="𝐞" src="https://twemoji.maxcdn.com/2/72x72/1d41e.png"><img class="emoji " alt="𝐚" title="𝐚" src="https://twemoji.maxcdn.com/2/72x72/1d41a.png"><img class="emoji " alt="𝐥" title="𝐥" src="https://twemoji.maxcdn.com/2/72x72/1d425.png"> <img class="emoji " alt="𝐎" title="𝐎" src="https://twemoji.maxcdn.com/2/72x72/1d40e.png"><img class="emoji " alt="𝐧" title="𝐧" src="https://twemoji.maxcdn.com/2/72x72/1d427.png"><img class="emoji " alt="𝐞" title="𝐞" src="https://twemoji.maxcdn.com/2/72x72/1d41e.png"> <img class="emoji " alt="👑" title="👑" src="https://twemoji.maxcdn.com/2/72x72/1f451.png"></strong>
+2 dny
+Neschv&#225;len&#233; CK
+ 
+Gbelik 30.10.2019
+<strong>Yung Thay</strong> - N word
+3 dny
+ 
+Davecz 01.11.2019
+<strong>Dejvič - reklama - perma</strong>
+
+ 
+「Pernik」02.11.2019
+Stoney - 4 dny, fear RP, nonRP driving
+ 
+「Pernik」03.11.2019
+:dynoSuccess: <img class="emoji " alt="🖤" title="🖤" src="https://twemoji.maxcdn.com/2/72x72/1f5a4.png">ম্যাক্স.অফ<img class="emoji " alt="🖤" title="🖤" src="https://twemoji.maxcdn.com/2/72x72/1f5a4.png">#6359 - reklama
+ 
+Majstro05.11.2019
+<strong>@Tom&#225;š</strong> -1 mesic, spamovani PM
+ 
+Lunnon 06.11.2019
+<strong>@Snigis</strong> - Repohor - neznalost pravidel
+ 
+McMart 06.11.2019
+<strong>@ernajs</strong> - neopr&#225;vněn&#233; pozv&#225;n&#237; na jin&#253; discord (nech&#225;pu jak to mohl napsat do #<img class="emoji " alt="🏅" title="🏅" src="https://twemoji.maxcdn.com/2/72x72/1f3c5.png">guvern&#233;r)
+ 
+「Pernik」06.11.2019
+<strong>@Tom&#225;š</strong> trolling v #deleted-channel
+ 
+「Pernik」07.11.2019 
+❗<img class="emoji " alt="☢" title="☢" src="https://twemoji.maxcdn.com/2/72x72/2622.png">️Kamade<img class="emoji " alt="☢" title="☢" src="https://twemoji.maxcdn.com/2/72x72/2622.png">️❗#7462 dostal ban trolling (stěrače na ponorku ve free talku)<span class="chatlog__edited-timestamp" title="23-Jan-20 06:23 PM">(edited)</span></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/546774375030980618/637957010473615370/Snimek_obrazovky_2019-10-27_v_11.12.09.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/546774375030980618/637957010473615370/Snimek_obrazovky_2019-10-27_v_11.12.09.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953668463722517" id="message-669953668463722517">
+                <div class="chatlog__content">
+                    <div class="markdown">Plam&#237;nkov&#225; 07.11.2019
+<strong>@Engetsu</strong>
+
+Mixing 3 dny - rekl do hry &quot;koukam ze me specti Yukon&quot; (nastesti u nej nidko nebyl) + Yukon
+ 
+「Pernik」09.11.2019
+!ban 128621944231821312
+ 
+DynoBOT09.11.2019
+:dynoSuccess: <strong>Leito#4734</strong> was banned | No reason given.
+ 
+「Pernik」09.11.2019
+
+ 
+Andrew 09.11.2019
+<strong>@tomythedon</strong>
+#0041
+-lhan&#237; admin teamu, d&#225;le nerespektov&#225;n&#237; admin teamu - odpojen&#237; se z roomky + odm&#237;tnut&#237; se vr&#225;cen&#237; = banned na 3 t&#253;dny
+ 
+Pav 09.11.2019
+posvěceno mnou<span class="chatlog__edited-timestamp" title="23-Jan-20 06:24 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953727242829831" id="message-669953727242829831">
+                <div class="chatlog__content">
+                    <div class="markdown">Andrew 10.11.2019
+<strong>@KeRoy </strong>
+-FailRP, střelba před d&#237;lnou bez RP důvodu - opakovan&#225;
+-banned na 3 t&#253;dny
+-př&#237;tomni 2 supervisor+manager projektu<span class="chatlog__edited-timestamp" title="23-Jan-20 06:24 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953820012576780" id="message-669953820012576780">
+                <div class="chatlog__content">
+                    <div class="markdown">-------------
+
+<strong>@Pavlov</strong> - PERMA - VŠICHNI V&#205;ME PROČ<span class="chatlog__edited-timestamp" title="23-Jan-20 06:24 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669953961868132352" id="message-669953961868132352">
+                <div class="chatlog__content">
+                    <div class="markdown">「Pernik」10.11.2019
+- neadekv&#225;tn&#237; RP (chčijee do kvěitn&#225;čům v oblec&#237;ch u Lehmanů, apod)
+- vniknut&#237; do frakčn&#237; nemovitosti (Comedy Club 11.11 0:43)
+
+předchoz&#237; zpr&#225;va je prim&#225;rně meme, snad všichni v&#237;me že toho je dost, předchoz&#237; zpr&#225;va se nesm&#237; dostat ven, pokud dostane, nemus&#237;m snad ř&#237;kat co bude n&#225;sledovat
+ 
+「Pernik」11.11.2019
+<strong>@wake me up#111</strong>1 - perma - lhan&#237; AT, rozš&#237;řov&#225;n&#237; drbů, zesměšnov&#225;n&#237; AT, arogantn&#237; hňup -- kryje nějak&#233;ho idiota kter&#253; vyn&#225;šel sračky z našeho srazu, pomluvy o tom kdo kde s k&#253;m, atd. (apropo Fixla nebo XiZyna)
+-- BEZ MOŽNOSTI ZRUŠEN&#205; BEZE MĚ
+ 
+Plam&#237;nkov&#225; 12.11.2019
+<strong>@EmiWhite</strong> - streamsnipe, copbaiting 4 dny + Slim
+ 
+Lunnon 12.11.2019
+<strong>@Overchef </strong>- 3 dny - nad&#225;vky do looc (&quot;Tak jsi kokot?&quot;)
+ 
+Majstro 13.11.2019
+<strong>@johnny#5397</strong> - perma - vydavani se za admina CORE na jinym serveru
+ 
+Lunnon 15.11.2019
+<strong>@Jackpal</strong> - 1 t&#253;den - porušen&#237; pravidla o vstupu do frakčn&#237;ch budov, zneužit&#237; PD jobu
+ 
+Gbelik 15.11.2019
+<strong>@Tučň&#225;k ≠ Tuň&#225;k</strong> - 4 dny - porušen&#237; pravidla pro vstup do frakčn&#237;ch budov
+ 
+Luckeers 16.11.2019
+<strong>@nir&#248;x</strong> - No-Fear, Non-RP driving, FailRP - 1Měs&#237;c - přihl&#233;dnuto k restům
+ 
+Luckeers18.11.2019
+<strong>@Johny</strong>
+Perma - l&#225;k&#225;n&#237; hr&#225;čů na jin&#253; server
+
+ 
+Luckeers19.11.2019
+<strong>@JustDannySK</strong> - Perma reklama
+
+ 
+ghostriderrcz21.11.2019
+<strong>@J3ZON </strong>- Perma cheating
+
+ 
+ghostriderrcz 21.11.2019
+<strong>@Almoondik</strong>
+Perma - l&#225;k&#225;n&#237; hr&#225;čů na jin&#253; server<span class="chatlog__edited-timestamp" title="23-Jan-20 06:25 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954000325705748" id="message-669954000325705748">
+                <div class="chatlog__content">
+                    <div class="markdown">&quot;<img class="emoji " alt="🅹" title="🅹" src="https://twemoji.maxcdn.com/2/72x72/1f179.png"><img class="emoji " alt="🅰" title="🅰" src="https://twemoji.maxcdn.com/2/72x72/1f170.png">️<img class="emoji " alt="🆈" title="🆈" src="https://twemoji.maxcdn.com/2/72x72/1f188.png"><img class="emoji " alt="🅷" title="🅷" src="https://twemoji.maxcdn.com/2/72x72/1f177.png"><img class="emoji " alt="🅰" title="🅰" src="https://twemoji.maxcdn.com/2/72x72/1f170.png">️<img class="emoji " alt="🆆" title="🆆" src="https://twemoji.maxcdn.com/2/72x72/1f186.png"><img class="emoji " alt="🅺" title="🅺" src="https://twemoji.maxcdn.com/2/72x72/1f17a.png">&quot;22.11.2019
+<strong>@J3ZON </strong>- Ban anulov&#225;n  prok&#225;z&#225;no /pravděpodobně způsobeno neleg&#225;ln&#237; kopi&#237; Windows - nahodit zpět
+ 
+Luckeers24.11.2019
+<strong>@17peci</strong> - Reklama na ciz&#237; server
+ 
+Luckeers24.11.2019
+<strong>@SVK Michal</strong> - Vypisov&#225;n&#237; hoven do PM - perma
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">26.11.2019
+<strong>@horis0601</strong>
+#5978 
+
+dostal ban na t&#253;den za porušen&#225; pravidla : KOS a kr&#225;dež PD auta.
+ 
+Luckeers01.12.2019
+<strong>@<img class="emoji " alt="𝘿" title="𝘿" src="https://twemoji.maxcdn.com/2/72x72/1d63f.png"><img class="emoji " alt="𝙖" title="𝙖" src="https://twemoji.maxcdn.com/2/72x72/1d656.png"><img class="emoji " alt="𝙧" title="𝙧" src="https://twemoji.maxcdn.com/2/72x72/1d667.png"><img class="emoji " alt="𝙠" title="𝙠" src="https://twemoji.maxcdn.com/2/72x72/1d660.png"><img class="emoji " alt="𝙍" title="𝙍" src="https://twemoji.maxcdn.com/2/72x72/1d64d.png"><img class="emoji " alt="𝙚" title="𝙚" src="https://twemoji.maxcdn.com/2/72x72/1d65a.png"><img class="emoji " alt="𝙖" title="𝙖" src="https://twemoji.maxcdn.com/2/72x72/1d656.png"><img class="emoji " alt="𝙥" title="𝙥" src="https://twemoji.maxcdn.com/2/72x72/1d665.png"><img class="emoji " alt="𝙚" title="𝙚" src="https://twemoji.maxcdn.com/2/72x72/1d65a.png"><img class="emoji " alt="𝙧" title="𝙧" src="https://twemoji.maxcdn.com/2/72x72/1d667.png"></strong> - &#250;těk z vězen&#237;, včera dostal rest, dnes znovu (omluv&#225; t&#237;m, že hled&#225; bugy) 
+
+3 dny ban
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">11.12.2019
+<strong>@Ja su Dejw&#237;d</strong>
+#1109 
+
+Perma ban - pos&#237;l&#225; lidem do PM hacky.
+<strong>@Kvapkan</strong> 
+
+Perma ban - cheaty
+<strong>@SnulaK</strong> 
+
+Perma ban - cheaty
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">11.12.2019
+<strong>@P&#193;NK0</strong>
+#1118
+
+Neadekv&#225;tn&#237; RP, Revenge kill, Stream Sniping.
+
+7dn&#237; ban.
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">12.12.2019
+<strong>@Rhenaya</strong>
+#6571 
+
+Perma ban - Reklama<span class="chatlog__edited-timestamp" title="23-Jan-20 06:26 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954035549208636" id="message-669954035549208636">
+                <div class="chatlog__content">
+                    <div class="markdown">Leginr&#246;k12.12.2019
+<strong>@Elokath447</strong>
+#9451
+
+Mixov&#225;n&#237; postav 
+
+3 dny ban
+ 
+「Pernik」13.12.2019
+<strong>Aresko</strong>
+
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">13.12.2019
+<strong>@Aresko 아르</strong>
+
+Perma ban - reklama
+ 
+Leginr&#246;k13.12.2019
+<strong>@Kubik_CZ</strong>
+#1309
+
+Reklama - Perma
+
+ 
+Luckeers15.12.2019
+<strong>@XiZyno</strong> 
+Vysm&#237;v&#225;n&#237; se overcheafovy na špatn&#253; překlad v generalu. 
+Repohovor
+ 
+Luckeers15.12.2019
+<strong>@Tsuzii </strong>
+- Perma - Agony effect
+Leavnula discord, st&#225;le byla připojen&#225;
+ 
+「Pernik」17.12.2019
+<strong>Nght_Thomaz_CZE</strong> - nevhodn&#233; vyjadřov&#225;n&#237;, ur&#225;žen&#237;
+
+!ban Nght_Thomaz_CZE ur&#225;žen&#237; a nevhodn&#233; vyjadřov&#225;n&#237; formou reakc&#237; u streamu
+ 
+DynoBOT17.12.2019
+:dynoSuccess: Nght_Thomaz_CZE#7649 was banned | ur&#225;žen&#237; a nevhodn&#233; vyjadřov&#225;n&#237; formou reakc&#237; u streamu
+ 
+Lunnon17.12.2019
+<strong>@Jungkook</strong>
+-neerpen&#237; zraněn&#237;
+3 dny<span class="chatlog__edited-timestamp" title="23-Jan-20 06:27 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954073755385887" id="message-669954073755385887">
+                <div class="chatlog__content">
+                    <div class="markdown">yukon18.12.2019
+<strong>@Smilda / RomanS</strong> ingame nick - NONrp driving a nonrp injury - 3 dny
+ 
+Lunnon19.12.2019
+<strong>@Boris Pršo</strong>
+-FailRP panic buttonu, lhan&#237; do /do
+5 dn&#237;
+ 
+「Pernik」21.12.2019
+<strong>xTADEASx</strong> perma reklama
+
+!ban xTADEASx
+ 
+DynoBOT21.12.2019
+:dynoSuccess: xTADEASx#9673 was banned | No reason given.
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">22.12.2019
+<strong>@Snigis</strong>
+#9724 
+
+Non RP driving a Non RP injuries 
+
+3 dny ban.
+<strong>@nir&#248;x</strong>
+#7096 
+
+To sam&#233; Nirox co Snigis. 
+
+3dny ban.
+Oba seděli v Nissan skyline, nabourali v 100MPH do auta, neerpili zraněn&#237;, ani že by s t&#237;m autem něco bylo, jeden auto odvezl do gar&#225;že a vzal si jin&#233; a druh&#253; vystoupil a pokračoval d&#225;l v RP
+ 
+Luckeers22.12.2019
+<strong>@Engetsu </strong>
+
+- Na z&#225;kladě přehodnocen&#237; situace, mu byl pouze odebr&#225;n WL s t&#237;m, že si mus&#237; udělat pohovor znovu + Rest
+ 
+Luckeers24.12.2019
+<strong>@Overchef</strong>
+
+- opakovan&#253; copbaiting
+- 2dny
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">27.12.2019
+@Overchef
+#5771 
+
+- Mixov&#225;n&#237; věc&#237; z postav 
+- opakovan&#253; Non RP driving 
+
+- 14 dn&#237;.
+ 
+yukon30.12.2019
+@Martini
+24hodin ban
+-fail v /do - neznalost
+ 
+「Pernik」02.01.2020
+
+Chip
+ 
+「Pernik」02.01.2020
+Chef - zapaloval a porušoval pravidla chatu, kick z dc
+!unban chef
+ 
+DynoBOT02.01.2020
+:dynoError: I can&#39;t find that user.<span class="chatlog__edited-timestamp" title="23-Jan-20 06:27 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954111369904148" id="message-669954111369904148">
+                <div class="chatlog__content">
+                    <div class="markdown">「Pernik」02.01.2020
+!unban Chef
+ 
+DynoBOT02.01.2020
+:dynoSuccess: Chef#7711 was unbanned
+ 
+Leginr&#246;k02.01.2020
+- PERMA
+
+ 
+「Pernik」02.01.2020
+<strong>EmbiHarper</strong> - pičus
+<a href="https://media.discordapp.net/attachments/589415886797013002/662370369000439820/IMG_20200102_200250.jpg?width=540&height=150">https://media.discordapp.net/attachments/589415886797013002/662370369000439820/IMG_20200102_200250.jpg?width=540&amp;height=150</a>
+
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">02.01.2020
+REKLAMA PERMA BAN
+
+<strong>@mikiszum#1107</strong>
+ 
+Clayia02.01.2020
+<strong>MrJason</strong>
+- ban 1 měs&#237;c (s možnost&#237; ž&#225;dosti o unban v polovině)
+- Disrespect AT (nevhodn&#253; meme) ⬇️
+
+ 
+Clayia 03.01.2020
+<strong>@Dvorky </strong>
+1 měs&#237;c  -  (v polovině si můžeš pož&#225;dat o unban)
+Stahov&#225;n&#237; fotek ze #<img class="emoji " alt="📸" title="📸" src="https://twemoji.maxcdn.com/2/72x72/1f4f8.png">screenshoty a použ&#237;v&#225;n&#237; jich v IC roomk&#225;ch.
+ 
+Clayia 03.01.2020
+<strong>@WolframCZ </strong>
+2 měs&#237;ce  -  (v polovině si může pož&#225;dat o unban)
+Stahov&#225;n&#237; fotek ze #<img class="emoji " alt="📸" title="📸" src="https://twemoji.maxcdn.com/2/72x72/1f4f8.png">screenshoty a použ&#237;v&#225;n&#237; jich v IC roomk&#225;ch.
+ 
+Andrew03.01.2020
+<strong>@.Ｍｏｔｙｌ.ｌｘｒｄ.</strong>
+#7609
+-Non RP Injures, Fail RP
+3 dny
+<strong>@.ノイズィ.</strong>
+#1337
+-Fail RP
+3 dny
+ 
+Lunnon 04.01.2020
+<strong>@nir&#248;x</strong>
+20 dn&#237;
+FailRP, zatlouk&#225;n&#237; informac&#237;
+ 
+「Pernik」05.01.2020
+<strong>Gyr0man / Caaono</strong> - perma na život - mrdkoš co použ&#237;v&#225; a rozšiřuje naše kraden&#233; skripty
+ 
+Luckeers05.01.2020
+<strong>@JESUS</strong>
+- NoFear, nev&#225;žen&#237; si postavy, copbaiting
+- 3 Dny<span class="chatlog__edited-timestamp" title="23-Jan-20 06:28 PM">(edited)</span></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://media.discordapp.net/attachments/589415886797013002/662370369000439820/IMG_20200102_200250.jpg?width=540&height=150">
+                                <img class="chatlog__embed-thumbnail" src="https://media.discordapp.net/attachments/589415886797013002/662370369000439820/IMG_20200102_200250.jpg?width=540&height=150" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954192986734602" id="message-669954192986734602">
+                <div class="chatlog__content">
+                    <div class="markdown">「Pernik」06.01.2020
+<strong>LussiD</strong> - měs&#237;c - lhan&#237; AT (IC 100% nev&#237;m že m&#225; Lehman dvojče, doloženo klipy že je lež), opakovan&#253; mixing (už v minulosti restovan&#253;), nonrpdriving (rest), metagaming (dom&#253;šlen&#237; věc&#237; do nejmenš&#237;ho detailu), KOS (CK KOS), přep&#237;n&#225;n&#237; postav pro vyhnut&#237; se RP (metagaming), metov&#225;n&#237; online hr&#225;čů, mixov&#225;n&#237; postav (&#250;plně stejn&#253; vzhled, m&#237;sta kam jezd&#237;, lid&#233; se kter&#253;mi se st&#253;k&#225;, atd.)
+Pajin - 7 dn&#237; - mixing voice (&quot;bacha na metu&quot;, 3x za hodinu &quot;to je metaxa, jedem pryč&quot;), mixov&#225;n&#237; postav (&quot;v klidu, tento bar&#225;k je Arthura&quot;), pod&#237;len&#237; se na skutc&#237;ch LussiD
+ 
+yukon 08.01.2020
+<strong>Kubiicekeu</strong> - lhan&#237; AT za z&#225;minkou z&#237;sk&#225;n&#237; WL bez ř&#225;dn&#233;ho pohovoru - perma
+ 
+Luckeers09.01.2020
+<strong>@[Mar]Doxz</strong> - sund&#225;n WL, debiln&#237; kecy
+ 
+Luckeers09.01.2020
+<strong>@Martini</strong>
+- noFearRP
+- 3 dny<span class="chatlog__edited-timestamp" title="23-Jan-20 06:28 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669954291800473632" id="message-669954291800473632">
+                <div class="chatlog__content">
+                    <div class="markdown">「Pernik」11.01.2020
+!ban 319908167746322432 využ&#237;v&#225;n&#237; kraden&#253;ch map
+ 
+DynoBOT11.01.2020
+:dynoSuccess: CorePlay<strong> | <img class="emoji " alt="𝐼" title="𝐼" src="https://twemoji.maxcdn.com/2/72x72/1d43c.png"> <img class="emoji " alt="𝐿" title="𝐿" src="https://twemoji.maxcdn.com/2/72x72/1d43f.png"><img class="emoji " alt="𝒪" title="𝒪" src="https://twemoji.maxcdn.com/2/72x72/1d4aa.png"><img class="emoji " alt="𝒱" title="𝒱" src="https://twemoji.maxcdn.com/2/72x72/1d4b1.png"><img class="emoji " alt="𝐸" title="𝐸" src="https://twemoji.maxcdn.com/2/72x72/1d438.png"> <img class="emoji " alt="𝒮" title="𝒮" src="https://twemoji.maxcdn.com/2/72x72/1d4ae.png"><img class="emoji " alt="𝒰" title="𝒰" src="https://twemoji.maxcdn.com/2/72x72/1d4b0.png"><img class="emoji " alt="𝒮" title="𝒮" src="https://twemoji.maxcdn.com/2/72x72/1d4ae.png"><img class="emoji " alt="𝐻" title="𝐻" src="https://twemoji.maxcdn.com/2/72x72/1d43b.png"><img class="emoji " alt="𝐼" title="𝐼" src="https://twemoji.maxcdn.com/2/72x72/1d43c.png"> |#9999 </strong>was banned | využ&#237;v&#225;n&#237; kraden&#253;ch map
+ 
+「Pernik」11.01.2020
+!ban 224293314453700610 resell
+ 
+DynoBOT11.01.2020
+:dynoSuccess: <strong><img class="emoji " alt="📸" title="📸" src="https://twemoji.maxcdn.com/2/72x72/1f4f8.png">Mr <img class="emoji " alt="𝓝" title="𝓝" src="https://twemoji.maxcdn.com/2/72x72/1d4dd.png"><img class="emoji " alt="𝓞" title="𝓞" src="https://twemoji.maxcdn.com/2/72x72/1d4de.png"><img class="emoji " alt="𝓑" title="𝓑" src="https://twemoji.maxcdn.com/2/72x72/1d4d1.png"><img class="emoji " alt="𝓞" title="𝓞" src="https://twemoji.maxcdn.com/2/72x72/1d4de.png"><img class="emoji " alt="𝓓" title="𝓓" src="https://twemoji.maxcdn.com/2/72x72/1d4d3.png"><img class="emoji " alt="𝓨" title="𝓨" src="https://twemoji.maxcdn.com/2/72x72/1d4e8.png"><img class="emoji " alt="🐍" title="🐍" src="https://twemoji.maxcdn.com/2/72x72/1f40d.png">#9999</strong> was banned | resell
+ 
+「Pernik」11.01.2020
+!ban 661670675010027520 resell
+ 
+DynoBOT11.01.2020
+:dynoError: I can&#39;t ban 661670675010027520
+ 
+「Pernik」11.01.2020
+!ban Qwee <img class="emoji " alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+ 
+DynoBOT11.01.2020
+:dynoSuccess: <strong>Qwee#8611</strong> was banned | <img class="emoji " alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+ 
+Leginr&#246;k11.01.2020
+<strong>@Kubas</strong>
+#1337
+
+- KOS NPC, bunnyhop
+- 3 dny
+ 
+「Pernik」15.01.2020
+!ban Miras kr&#225;dež a š&#237;řen&#237; kraden&#253;ch skript&#167;
+ 
+DynoBOT15.01.2020
+:dynoSuccess: <strong>Miras#7794</strong> was banned | kr&#225;dež a š&#237;řen&#237; kraden&#253;ch skript&#167;
+ 
+「Pernik」15.01.2020
+pal do piči ty zmrde
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">minulou sobotu v 19:23
+<strong>@Jackpal</strong>
+#8400
+
+NonRP Injuries 
+
+3dny.
+ 
+Leginr&#246;k minulou neděli v 21:54
+<strong>@MattyCZE00</strong>
+#8759
+
+- Fear, vyt&#225;hl si druh&#253; telefon, kter&#253; neměl zaerpen&#253;, ikdyž byl spoutan&#253;, zavolal si PD. 
+-5 dnu.
+ 
+Leginr&#246;kminul&#233; ponděl&#237; v 16:11
+<strong>@Xstrife</strong>
+#3929
+
+- REKLAMA 
+- PERMA BAN
+
+ 
+Lunnon minul&#233; &#250;ter&#253; v 0:51
+- Kotva připuštěn po banu bez pohovoru
+ 
+DynoBOTvčera v 10:11
+:dynoSuccess: KrysCZ#7294 was banned | No reason given.
+ 
+Dave <img class="emoji " alt="👊" title="👊" src="https://twemoji.maxcdn.com/2/72x72/1f44a.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">včera v 16:29
+<strong>@nAsty<img class="emoji " alt="🃏" title="🃏" src="https://twemoji.maxcdn.com/2/72x72/1f0cf.png"></strong>
+#2222
+
+Nerespektov&#225;n&#237; A-teamu, h&#225;dan&#237; se ve veden&#237; 
+
+odebr&#225;n&#237; WL na 14dn&#237;.
+ 
+Lunnon dnes v 14:59
+<strong>@「Pernik」#9939   </strong> <img class="emoji " alt="👌" title="👌" src="https://twemoji.maxcdn.com/2/72x72/1f44c.png"> <img class="emoji " alt="👑" title="👑" src="https://twemoji.maxcdn.com/2/72x72/1f451.png"> <img class="emoji " alt="🥳" title="🥳" src="https://twemoji.maxcdn.com/2/72x72/1f973.png">                      
+
+PERMA
+- reklama na jeho vlastn&#237; port&#225;l<span class="chatlog__edited-timestamp" title="23-Jan-20 06:29 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 06:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="669964294145703955" id="message-669964294145703955">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span> člen CK mafie</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/210762051750985739/bf0c3009f1b2f9e680c9b16f9a6e4a15.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="&quot;&#127353;&#127344;&#127368;&#127351;&#127344;&#127366;&#127354;&quot;#1652" data-user-id="210762051750985739"  style="color: rgb(92, 91, 91)" >&quot;&#127353;&#127344;&#127368;&#127351;&#127344;&#127366;&#127354;&quot;</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 07:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="669965096965111818" id="message-669965096965111818">
+                <div class="chatlog__content">
+                    <div class="markdown">ki ffoh &#180;- CK mafia</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 07:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="669975053378781226" id="message-669975053378781226">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="SMorcula#2682">@SMorcula</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="669975315371524136" id="message-669975315371524136">
+                <div class="chatlog__content">
+                    <div class="markdown">Perma ban
+
+Vyd&#225;v&#225;n&#237; se za jin&#233;ho hr&#225;če, obch&#225;zen&#237; WL<span class="chatlog__edited-timestamp" title="23-Jan-20 07:44 PM">(edited)</span></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/669975315128516662/0000000000.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/669975315128516662/0000000000.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">24-Jan-20 12:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="670053514130620430" id="message-670053514130620430">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="BaBča♪&#167;#3028">@BaBča♪&#167;</span>
+
+<strong>PERMA</strong>
+CK MAFIE</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">26-Jan-20 01:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="670780801914241035" id="message-670780801914241035">
+                <div class="chatlog__content">
+                    <div class="markdown">@pepo_inkognito#0079
+
+<strong>PERMA</strong>
+Obch&#225;zen&#237; formul&#225;ře</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/328601571321446411/d0f9d2bbbe52a535c5702184a0996831.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Luckeers#2549" data-user-id="328601571321446411" >Luckeers</span>
+
+
+        <span class="chatlog__timestamp">27-Jan-20 10:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="671470912301694979" id="message-671470912301694979">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="cry alone#1111">@cry alone</span>
+- ur&#225;žky hr&#225;čů, nerespektov&#225;n&#237; AT<span class="chatlog__edited-timestamp" title="27-Jan-20 10:45 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/328601571321446411/d0f9d2bbbe52a535c5702184a0996831.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Luckeers#2549" data-user-id="328601571321446411" >Luckeers</span>
+
+
+        <span class="chatlog__timestamp">30-Jan-20 09:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="672545791877054464" id="message-672545791877054464">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="DarkReaper#5092">@DarkReaper</span> 
+
+- 3 dny ban - Chce b&#253;t potrest&#225;n</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="lulw" title="lulw" src="https://cdn.discordapp.com/emojis/670007255575429122.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇨" title="🇨" src="https://twemoji.maxcdn.com/2/72x72/1f1e8.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🅰️" title="🅰️" src="https://twemoji.maxcdn.com/2/72x72/1f170.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇺" title="🇺" src="https://twemoji.maxcdn.com/2/72x72/1f1fa.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/328601571321446411/d0f9d2bbbe52a535c5702184a0996831.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Luckeers#2549" data-user-id="328601571321446411" >Luckeers</span>
+
+
+        <span class="chatlog__timestamp">02-Feb-20 04:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="673553524633632799" id="message-673553524633632799">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Davee#2066">@Davee</span>
+
+- Měs&#237;c - nevhodn&#233; chov&#225;n&#237;, arogantn&#237; chov&#225;n&#237; ve veden&#237;.<span class="chatlog__edited-timestamp" title="02-Feb-20 04:41 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">03-Feb-20 05:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="673927857621434400" id="message-673927857621434400">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dignousss#3331">@Dignousss</span>
+#3331
+
+-Meta -14dn&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">03-Feb-20 06:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="673945879345889321" id="message-673945879345889321">
+                <div class="chatlog__content">
+                    <div class="markdown">!ban Ropit56#2204</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="673946200688427039" id="message-673946200688427039">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+
+<strong>PERMA</strong>
+
+- Rozes&#237;l&#225;n&#237; pozv&#225;nek</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="673946580465877042" id="message-673946580465877042">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/673946580222476298/image0.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/673946580222476298/image0.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">04-Feb-20 06:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="674313141802500127" id="message-674313141802500127">
+                <div class="chatlog__content">
+                    <div class="markdown">@aLieRy#5009
+
+<strong>PERMA</strong>
+
+- Rozes&#237;l&#225;n&#237; pozv&#225;nek na jin&#233; servery</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/262299014135939072/806a24a0c49631d0ff82d6a13159884f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Clayia#6772" data-user-id="262299014135939072" >Clayia</span>
+
+
+        <span class="chatlog__timestamp">04-Feb-20 07:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="674323467105075250" id="message-674323467105075250">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>GAMES</strong>- PERMANENTN&#205; ODEBR&#193;N&#205; WL
+- Znev&#225;žen&#237; projektu a komunity Core
+- Odvol&#225;n&#237; nejdř&#237;ve za 3 měs&#237;ce (až se nauč&#237; chovat)
+
+<strong>UNBANNED</strong><span class="chatlog__edited-timestamp" title="08-Feb-20 01:45 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">04-Feb-20 08:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="674343384810520668" id="message-674343384810520668">
+                <div class="chatlog__content">
+                    <div class="markdown">Joz&#237;fek
+#5514 
+
+perma ban - reklama</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">04-Feb-20 09:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="674345750989373440" id="message-674345750989373440">
+                <div class="chatlog__content">
+                    <div class="markdown">@Comunista_CZ
+#9594 
+
+Čůr&#225;k - perma</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="salute" title="salute" src="https://cdn.discordapp.com/emojis/669228568391319564.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤣" title="🤣" src="https://twemoji.maxcdn.com/2/72x72/1f923.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/262299014135939072/806a24a0c49631d0ff82d6a13159884f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Clayia#6772" data-user-id="262299014135939072" >Clayia</span>
+
+
+        <span class="chatlog__timestamp">05-Feb-20 06:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="674494387140427786" id="message-674494387140427786">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>DarkReaper</strong> - PERMA BAN - Kokot</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/285178077628203009/fc4e6798e783f9d771b7ee1f5bb13677.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Majstro#0429" data-user-id="285178077628203009"  style="color: rgb(241, 196, 15)" >Majstro</span>
+
+
+        <span class="chatlog__timestamp">06-Feb-20 05:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="675017586206965783" id="message-675017586206965783">
+                <div class="chatlog__content">
+                    <div class="markdown">!ban <span class="mention" title="Strike#6788">@Strike</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/155149108183695360/19a5ee4114b47195fcecc6646f2380b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dyno#3861" data-user-id="155149108183695360" >CoreRP bot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Feb-20 05:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="675017593777553408" id="message-675017593777553408">
+                <div class="chatlog__content">
+                    <div class="markdown"><img class="emoji " alt="dynoSuccess" title="dynoSuccess" src="https://cdn.discordapp.com/emojis/314691591484866560.png"> <em><strong>S T R I K E#6788 was banned</strong></em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/262299014135939072/806a24a0c49631d0ff82d6a13159884f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Clayia#6772" data-user-id="262299014135939072" >Clayia</span>
+
+
+        <span class="chatlog__timestamp">06-Feb-20 08:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="675054225352294497" id="message-675054225352294497">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Bauchyc#8048">@Bauchyc</span> 
+2 dny - využit&#237; pohledu třet&#237; osoby</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/262299014135939072/806a24a0c49631d0ff82d6a13159884f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Clayia#6772" data-user-id="262299014135939072" >Clayia</span>
+
+
+        <span class="chatlog__timestamp">06-Feb-20 09:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="675069899818795019" id="message-675069899818795019">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Snikerennn#6369">@Snikerennn</span> - 2 měs&#237;ce (v polovině si může pož&#225;dat o unban)
+
+Metagaming - zmetov&#225;n&#237; infa ohledně Cosa Nostra</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/262299014135939072/806a24a0c49631d0ff82d6a13159884f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Clayia#6772" data-user-id="262299014135939072" >Clayia</span>
+
+
+        <span class="chatlog__timestamp">07-Feb-20 05:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="675377396500791306" id="message-675377396500791306">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Domino1910#7969">@Domino1910</span> 
+- 3 t&#253;dny (v polovině si může pož&#225;dat o unban)
+
+- Musela se skipovat velk&#225; akce, zavolal policii při PK přes G
+- Vypisov&#225;n&#237; do looc, ohledně schv&#225;len&#237;/neschv&#225;len&#237; CK
+- Odm&#237;t&#225;n&#237; RP (odm&#237;t&#225;n&#237; se probrat z bezvědom&#237; po d&#225;vce adrenalinu) - nakonec se probral a erpil, ale až po delš&#237; době
+
+- Zavol&#225;n&#237; kamar&#225;dů, když neměl mobil<span class="chatlog__edited-timestamp" title="09-Feb-20 02:53 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">09-Feb-20 12:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="675853111512006656" id="message-675853111512006656">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="petronel &#128124;&#127996;#1238">@petronel &#128124;&#127996;</span>
+
+<strong>PERMA</strong>
+
+Neadekv&#225;tn&#237; chov&#225;n&#237; ve veden&#237;, kazen&#237; RP v opilosti, streamov&#225;n&#237; veden&#237;<span class="chatlog__edited-timestamp" title="09-Feb-20 01:10 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">09-Feb-20 01:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="675856465122164758" id="message-675856465122164758">
+                <div class="chatlog__content">
+                    <div class="markdown">@KDV_Kelly#6338 
+
+<strong>PERMA</strong>
+
+Odes&#237;l&#225;n&#237; pozv&#225;nek hr&#225;čům na jin&#253; server</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/328601571321446411/d0f9d2bbbe52a535c5702184a0996831.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Luckeers#2549" data-user-id="328601571321446411" >Luckeers</span>
+
+
+        <span class="chatlog__timestamp">13-Feb-20 11:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="677642298095304705" id="message-677642298095304705">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="k0tva#2865">@k0tva</span>
+- Odpojen&#237; z RP akce
+- 3 dny</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="677642945704230944" id="message-677642945704230944">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="fixl#5174">@fixl</span>
+- Odpojen&#237; z RP akce
+- 3 dny</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">13-Feb-20 11:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="677643213439369226" id="message-677643213439369226">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="cry alone#1111">@cry alone</span>
+- Odpojen&#237; z RP akce
+- 3 dny</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">14-Feb-20 10:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="677984224799752233" id="message-677984224799752233">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drobovicak#8098">@Drobovicak</span>
+- Hran&#237; za 2 neschv&#225;len&#233; postavy
+- 3 dny</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">20-Feb-20 05:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="680086560149995589" id="message-680086560149995589">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+
+<strong>PERMA</strong>
+-Pos&#237;l&#225;n&#237; pozv&#225;nek</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/680086559713656862/unknown.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/680086559713656862/unknown.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">21-Feb-20 07:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="680476187013021760" id="message-680476187013021760">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dendy#0047">@Dendy</span>
+<span class="mention" title="Efieu#8336">@Efieu</span>
+
+<strong>1 Den</strong>
+- nonrp driving
+-cop baiting</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/178572899475652608/9101cdff7cf130a70b9ec80ae0e1eb25.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Pav#8794" data-user-id="178572899475652608"  style="color: rgb(241, 196, 15)" >Pav</span>
+
+
+        <span class="chatlog__timestamp">23-Feb-20 12:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="680925887734087799" id="message-680925887734087799">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Efieu#8336">@Efieu</span> 
+- <strong>7 dn&#237;</strong> (+ předchoz&#237; ban a resty)
+- nerpen&#237; zraněn&#237;<span class="chatlog__edited-timestamp" title="23-Feb-20 12:56 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">06-Mar-20 12:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="685445268552155139" id="message-685445268552155139">
+                <div class="chatlog__content">
+                    <div class="markdown">@stigur#0082
+
+PERMA BAN - REKLAMA NA JIN&#221; SERVER</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❤️" title="❤️" src="https://twemoji.maxcdn.com/2/72x72/2764.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/178572899475652608/9101cdff7cf130a70b9ec80ae0e1eb25.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Pav#8794" data-user-id="178572899475652608"  style="color: rgb(241, 196, 15)" >Pav</span>
+
+
+        <span class="chatlog__timestamp">07-Mar-20 02:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="685846762682187830" id="message-685846762682187830">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dendy#0047">@Dendy</span>
+<strong>3 dny ban</strong>
+- nerpen&#237; zraněn&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">09-Mar-20 10:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="686681453836238896" id="message-686681453836238896">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="JustDannySK#5654">@JustDannySK</span>
+#9999 
+
+Připojen&#253; na Bauchyčovo streamu počas RP akce 
+Nereagov&#225;n&#237; ve hře /do a celkově interakce
+
+14dn&#237;<span class="chatlog__edited-timestamp" title="09-Mar-20 10:09 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="RIP" title="RIP" src="https://cdn.discordapp.com/emojis/401482196394835970.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">10-Mar-20 06:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="686995173514805254" id="message-686995173514805254">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="cry alone#1111">@cry alone</span>
+#1111 
+
+Unwl jak na DC tak na Serveru 
+- Jakmile se začne chovat norm&#225;lně tak nen&#237; probl&#233;m mu ho d&#225;t asi zpět.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">12-Mar-20 11:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="687786744317345792" id="message-687786744317345792">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="SamNikGames#4201">@SamNikGames</span>
+3 Dny ban 
+- Neadekv&#225;tn&#237; RP 
+- Neschv&#225;len&#253; gross</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/453978033020207104/89c6f542576ceb754f56f2403133f820.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Gbelik#8154" data-user-id="453978033020207104"  style="color: rgb(52, 152, 219)" >Gbelik</span>
+
+
+        <span class="chatlog__timestamp">13-Mar-20 08:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="688112189948690457" id="message-688112189948690457">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dendy#0047">@Dendy</span> 
+
+7 dn&#237; 
+
+FailRP</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">13-Mar-20 10:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="688131202628321388" id="message-688131202628321388">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Efieu#8336">@Efieu</span> 
+
+14 Dn&#237; (+ předchoz&#237; ban a resty)
+- FailRP</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">13-Mar-20 11:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="688155435395579976" id="message-688155435395579976">
+                <div class="chatlog__content">
+                    <div class="markdown">@KOUBEK#7511
+
+permaban
+
+-ur&#225;žen&#237; projektu</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😄" title="😄" src="https://twemoji.maxcdn.com/2/72x72/1f604.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">14-Mar-20 01:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="688178399734530061" id="message-688178399734530061">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="NOFEAR RP#6542">@NOFEAR RP</span>
+
+- fear RP
+- mixing
+
+3 dny ban</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">14-Mar-20 04:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="688414340113760301" id="message-688414340113760301">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Az1L#8716">@Az1L</span>
+ 
+7Dni ban 
+- NonRP Injuries 
+- NoFear
+- Nereagov&#225;n&#237; na /do 
+Celkov&#253; FailRP</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">16-Mar-20 01:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="689094891271487489" id="message-689094891271487489">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="sc.honzik#4864">@sc.honzik</span>
+- NoFear
+- Neadekv&#225;tn&#237; RP 
+
+7Dn&#237; ban</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">19-Mar-20 01:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="690168306958729238" id="message-690168306958729238">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="NOFEAR RP#6542">@NOFEAR RP</span>
+
+-&#250;mysln&#233; odpojen&#237; ze hry a opuštěn&#237; discordu kdy byl vol&#225;n do veden&#237;.
+S&#225;m psal na twichi Herkonovi že to udělal
+PERMABAN - REKLAMA NA SERVER<span class="chatlog__edited-timestamp" title="19-Mar-20 08:33 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/407236302724005889/0f9e51ed0889c4a294b582fa85d2a63f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MadMick#0773" data-user-id="407236302724005889"  style="color: rgb(52, 152, 219)" >MadMick</span>
+
+
+        <span class="chatlog__timestamp">21-Mar-20 01:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="690901018703298621" id="message-690901018703298621">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dignousss#3331">@Dignousss</span>
+
+- NonRP Driving
+- nesmysln&#225; střelba na NPC
+
+ban na 3 dny</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">22-Mar-20 01:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="691087577591316540" id="message-691087577591316540">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ʜᴇʀᴋᴏɴ#9999">@ʜᴇʀᴋᴏɴ</span>
+
+-mixing
+
+ban na 7 dn&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/210762051750985739/bf0c3009f1b2f9e680c9b16f9a6e4a15.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="&quot;&#127353;&#127344;&#127368;&#127351;&#127344;&#127366;&#127354;&quot;#1652" data-user-id="210762051750985739"  style="color: rgb(92, 91, 91)" >&quot;&#127353;&#127344;&#127368;&#127351;&#127344;&#127366;&#127354;&quot;</span>
+
+
+        <span class="chatlog__timestamp">24-Mar-20 10:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="692122001376018474" id="message-692122001376018474">
+                <div class="chatlog__content">
+                    <div class="markdown">@payn#1111 
+
+- Porušen&#237; pravidla o skr&#253;v&#225;n&#237; v keři + se s&#225;m doznal že pravidlo nezn&#225; a nevěděl o něm 
+
+3 dny + repohovor</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">25-Mar-20 07:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="692438958591705148" id="message-692438958591705148">
+                <div class="chatlog__content">
+                    <div class="markdown">@NapalmDead
+#8075
+
+- Advertising na discordu
+
+Perma</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">27-Mar-20 07:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="693163345867702303" id="message-693163345867702303">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/693163345313792020/unknown.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/693163345313792020/unknown.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="693163440520298648" id="message-693163440520298648">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Folky#7420">@Folky</span>
+#7420
+
+- Perma ban, rozes&#237;l&#225;n&#237; pozv&#225;nek do PM</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">28-Mar-20 05:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="693490988173230163" id="message-693490988173230163">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="poko#1265">@poko</span>
+
+- mixing
+- lhan&#237; do /do - PD se ho ptal zda našel zbraně napsal, že ne, přitom měl u sebe obušek a nůž
+celkově m&#225; strašn&#233; trash RP
+
+1 měs&#237;c<span class="chatlog__edited-timestamp" title="28-Mar-20 05:06 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">01-Apr-20 08:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="694978503342293012" id="message-694978503342293012">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="DannyRP#3661">@DannyRP</span>
+
+- metagaming
+10 dn&#237;</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="694978634511024289" id="message-694978634511024289">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Leginr&#246;k#3131">@Łeginr&#246;k</span>
+
+- metagaming
+20 dn&#237;<span class="chatlog__edited-timestamp" title="01-Apr-20 08:37 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">03-Apr-20 01:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="695597187387621396" id="message-695597187387621396">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Atoki#0001">@Atoki</span>
+
+Banned - 14 dn&#237;, ur&#225;žky admina</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="💦" title="💦" src="https://twemoji.maxcdn.com/2/72x72/1f4a6.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/453978033020207104/89c6f542576ceb754f56f2403133f820.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Gbelik#8154" data-user-id="453978033020207104"  style="color: rgb(52, 152, 219)" >Gbelik</span>
+
+
+        <span class="chatlog__timestamp">03-Apr-20 01:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="695598401835761666" id="message-695598401835761666">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="CrazY#2004">@CrazY</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="695598425395167262" id="message-695598425395167262">
+                <div class="chatlog__content">
+                    <div class="markdown">Ur&#225;žky admina</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="695598449063886867" id="message-695598449063886867">
+                <div class="chatlog__content">
+                    <div class="markdown">7 dn&#237;</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="695599472465543228" id="message-695599472465543228">
+                <div class="chatlog__content">
+                    <div class="markdown">kick z disordu dostal protože když mu byli sundan&#253; role tak st&#225;le h&#225;zel reakce do general chatu protože discord je jebnutej</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">03-Apr-20 11:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="695750909799563265" id="message-695750909799563265">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Atoki#0001">@Atoki</span>
+
+-Omluva Ozzymu, sn&#237;žen&#237; trestu na  3 dny, nem&#225; prohřešky</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="695750965579612200" id="message-695750965579612200">
+                <div class="chatlog__content">
+                    <div class="markdown">-ban plat&#237; do ponděl&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">05-Apr-20 06:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="696395824510402641" id="message-696395824510402641">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Sk8perace1#7295">@Sk8perace1</span>
+
+- Reklama do PM
+Perma 
+<a href="https://cdn.discordapp.com/attachments/593859568170172448/696247220835450930/unknown.png">https://cdn.discordapp.com/attachments/593859568170172448/696247220835450930/unknown.png</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/593859568170172448/696247220835450930/unknown.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/593859568170172448/696247220835450930/unknown.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">05-Apr-20 07:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="696417458378113110" id="message-696417458378113110">
+                <div class="chatlog__content">
+                    <div class="markdown">Smokey, GAMES
+
+- nat&#225;čen&#237; veden&#237;
+<strong>PERMA</strong></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="696417561209864253" id="message-696417561209864253">
+                <div class="chatlog__content">
+                    <div class="markdown">HERKONN
+
+- Ur&#225;žen&#237; projektu
+<strong>PERMA</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/453978033020207104/89c6f542576ceb754f56f2403133f820.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Gbelik#8154" data-user-id="453978033020207104"  style="color: rgb(52, 152, 219)" >Gbelik</span>
+
+
+        <span class="chatlog__timestamp">05-Apr-20 09:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="696447063415586938" id="message-696447063415586938">
+                <div class="chatlog__content">
+                    <div class="markdown">Clayia
+
+- vytv&#225;řen&#237; sporů m&#237;řen na corerp , neust&#225;le zapalov&#225;n&#237; , pomluvy
+
+<strong>PERMA</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="tracyhappy" title="tracyhappy" src="https://cdn.discordapp.com/emojis/499593467413135380.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="kekw" title="kekw" src="https://cdn.discordapp.com/emojis/670008296425390092.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">05-Apr-20 10:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="696464170178052228" id="message-696464170178052228">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="P&#193;NK0#6666">@P&#193;NK0</span>
+#3766
+
+-Perma, ur&#225;žka projektu<span class="chatlog__edited-timestamp" title="05-Apr-20 11:00 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/178572899475652608/9101cdff7cf130a70b9ec80ae0e1eb25.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Pav#8794" data-user-id="178572899475652608"  style="color: rgb(241, 196, 15)" >Pav</span>
+
+
+        <span class="chatlog__timestamp">05-Apr-20 11:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="696478770223382609" id="message-696478770223382609">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+- znevažov&#225;n&#237; a pošpiňov&#225;n&#237; členů AT
+- znevažov&#225;n&#237; a pošpiňov&#225;n&#237; projektu samotn&#233;ho
+- zapalov&#225;n&#237; v generalu
+
+<strong>2 měs&#237;ce</strong><span class="chatlog__edited-timestamp" title="06-Apr-20 12:00 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">06-Apr-20 12:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="696487377052368946" id="message-696487377052368946">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Engetsu#8888">@Engetsu</span>
+<strong>Perma</strong> za ur&#225;žen&#237; AT a celkov&#233;ho projektu</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">06-Apr-20 04:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="696729846964813905" id="message-696729846964813905">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+#6149
+@CleinoCZECH
+#5215
+
+- Lhan&#237; A-Teamu
+
+<em><strong>perma ban</strong></em><span class="chatlog__edited-timestamp" title="06-Apr-20 04:40 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">06-Apr-20 10:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="696813515880792164" id="message-696813515880792164">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+
+- Pomlouv&#225;n&#237; coru věřejně na instagramu
+- Arogance ve veden&#237; 
+- Mixing ve voicu do hry 
+
+Perma ban, bez možnosti unbanu!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">07-Apr-20 02:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="696881805994754139" id="message-696881805994754139">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="M4RISEK#3154">@M4RISEK</span>
+#9967
+
+- Podvod při formul&#225;ři
+
+07.04.2020 - ban na půl roku</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">09-Apr-20 12:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="697752521464217651" id="message-697752521464217651">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Unknown">@Unknown</span>
+-Stream Snipe, Non RP driving, Non RP Injuries
+-hran&#237; za neschv&#225;lenou postavu, opuštěn&#237; veden&#237;, pokusil si znovu schv&#225;lit formul&#225;ř i když m&#225; permu, vypisov&#225;n&#237; PM adminům
+
+<strong>PERMA</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">09-Apr-20 04:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="697814383786721280" id="message-697814383786721280">
+                <div class="chatlog__content">
+                    <div class="markdown">@The_MajkySK #1752
+
+- NoRP driving, injuries
+- ur&#225;žky projektu 
+
+permu</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/249187055555313665/3f955469057f33b4c1ba206c6d88f7d1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="gUcioQQ#9792" data-user-id="249187055555313665"  style="color: rgb(255, 0, 230)" >gUcio</span>
+
+
+        <span class="chatlog__timestamp">11-Apr-20 09:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="698611241752592405" id="message-698611241752592405">
+                <div class="chatlog__content">
+                    <div class="markdown">iMRSw
+
+- pos&#237;l&#225; reklamy na server
+(nemůžu ho naj&#237;t)
+
+Permu pros&#237;m</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/453978033020207104/89c6f542576ceb754f56f2403133f820.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Gbelik#8154" data-user-id="453978033020207104"  style="color: rgb(52, 152, 219)" >Gbelik</span>
+
+
+        <span class="chatlog__timestamp">11-Apr-20 10:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="698623443196837889" id="message-698623443196837889">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Sky#6319">@Sky</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="698623467934711829" id="message-698623467934711829">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="[Snow]#6834">@[Snow]</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="698623516756541441" id="message-698623516756541441">
+                <div class="chatlog__content">
+                    <div class="markdown">3 dny ban</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="698623535890956378" id="message-698623535890956378">
+                <div class="chatlog__content">
+                    <div class="markdown">- meta
+- mixing</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/318765314483421184/2f4b3df2b57f981e11175ca944eb467f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dave &#128074;&#127995;#4268" data-user-id="318765314483421184"  style="color: rgb(26, 188, 156)" >Dave &#128074;&#127995;</span>
+
+
+        <span class="chatlog__timestamp">12-Apr-20 04:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="698902519740628992" id="message-698902519740628992">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="sc.honzik#4864">@sc.honzik</span>
+
+- Odpojen&#237; z RP akce
+- jeho 3 postavy se chovaj&#237; &#250;plně stejně a předv&#225;d&#237; tot&#225;ln&#237; trash
+- Nikdo z PD na něj už nemaj&#237; n&#225;ladu 
+
+Ban na 1 měs&#237;c, BEZ MOŽNOSTI O ZKR&#193;CEN&#205;.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="schvaleno" title="schvaleno" src="https://cdn.discordapp.com/emojis/690009273379586058.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/280119033305628674/4b8756589032ca2a6513ee9c1fac77f6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="McMart#8347" data-user-id="280119033305628674"  style="color: rgb(199, 27, 27)" >McMart</span>
+
+
+        <span class="chatlog__timestamp">12-Apr-20 08:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="698958113591525477" id="message-698958113591525477">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="TopoliCZ#8193">@TopoliCZ</span> 
+
+- NonRP driving na motorce
+- mixing ve voice
+
+15 dn&#237;<span class="chatlog__edited-timestamp" title="12-Apr-20 08:10 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">12-Apr-20 11:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="699007810679341057" id="message-699007810679341057">
+                <div class="chatlog__content">
+                    <div class="markdown">@KANIBAL
+
+permaban, ur&#225;žky adminu<span class="chatlog__edited-timestamp" title="13-Apr-20 12:10 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/407236302724005889/0f9e51ed0889c4a294b582fa85d2a63f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MadMick#0773" data-user-id="407236302724005889"  style="color: rgb(52, 152, 219)" >MadMick</span>
+
+
+        <span class="chatlog__timestamp">13-Apr-20 03:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="699254866668683264" id="message-699254866668683264">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="majerssgy#9094">@majerssgy</span>
+- vyvol&#225;v&#225;n&#237; šarv&#225;tky v local ooc
+- vulgarismy v local ooc a slovn&#237; &#250;toky na hr&#225;če
+- mixing 
+
+2 t&#253;dny</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">14-Apr-20 12:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="699563393475936338" id="message-699563393475936338">
+                <div class="chatlog__content">
+                    <div class="markdown">@SniperkillerCZE
+#4911
+- Reklama do PM
+
+Perma<span class="chatlog__edited-timestamp" title="14-Apr-20 12:15 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">14-Apr-20 03:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="699613948378480652" id="message-699613948378480652">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Serpentin#3978">@Serpent</span>
+#3978
+
+- Ur&#225;žen&#237; člena a-teamu
+
+7 dn&#237;<span class="chatlog__edited-timestamp" title="14-Apr-20 03:37 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="699614584159600640" id="message-699614584159600640">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="k0tva#2865">@k0tva</span>
+#2865
+
+- Ur&#225;žen&#237; člena a-teamu
+
+7 dn&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">14-Apr-20 06:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="699660181725904936" id="message-699660181725904936">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Figius#5384">@Figius</span> 
+
+Reklama
+
+Perma<span class="chatlog__edited-timestamp" title="14-Apr-20 06:39 PM">(edited)</span></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/699660181520252999/unknown.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/699660181520252999/unknown.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/295199449125224448/a_a8419c1ce5e1fb15a3c029d0cfdd07ef.gif" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Humor#8888" data-user-id="295199449125224448"  style="color: rgb(52, 152, 219)" >humor</span>
+
+
+        <span class="chatlog__timestamp">15-Apr-20 12:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="699751637136310323" id="message-699751637136310323">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="YUNG THAY#1337">@YUNG THAY</span>
+#1337
+
+- Crosshair
+
+3 dny, bez možnosti unbanu</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">15-Apr-20 06:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="700016289774567465" id="message-700016289774567465">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drobovicak#8098">@Drobovicak</span>
+
+3 dny, polovičn&#237; meta</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">18-Apr-20 06:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="701105527379198073" id="message-701105527379198073">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Mato258#5353">@Mato258</span>
+#5353
+
+- FailRP, NonRP driving, nerpen&#237; Fearu 
+-Nedostavil se ani do veden&#237; a odpojil se
+
+2 měs&#237;ce ban</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">20-Apr-20 02:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="701767334754517013" id="message-701767334754517013">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="&#119966;&#119989;&#119864;&#119973;&#119868;&#119877;&#119868;#4258">@&#119966;&#119989;&#119864;&#119973;&#119868;&#119877;&#119868;</span>
+#4258
+
+StreamSnipe
+
+-7 dn&#237;</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/407236302724005889/0f9e51ed0889c4a294b582fa85d2a63f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MadMick#0773" data-user-id="407236302724005889"  style="color: rgb(52, 152, 219)" >MadMick</span>
+
+
+        <span class="chatlog__timestamp">20-Apr-20 03:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="701790687519178774" id="message-701790687519178774">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="medvidek#7391">@medvidek</span>
+
+reklama
+
+Perma<span class="chatlog__edited-timestamp" title="20-Apr-20 03:45 PM">(edited)</span></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/701790686688837712/unknown.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/701790686688837712/unknown.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278541066980950016/335bc580b3c794133bdd3efb49d9c8aa.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lunnon#4523" data-user-id="278541066980950016"  style="color: rgb(199, 27, 27)" >Lunnon</span>
+
+
+        <span class="chatlog__timestamp">21-Apr-20 01:38 AM</span>
+
+            <div class="chatlog__message " data-message-id="701939761870405743" id="message-701939761870405743">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Madness_Duck#0320">@Madness &#128074;&#127995;</span>
+
+- Meta, power
+<strong>1 Měs&#237;c</strong><span class="chatlog__edited-timestamp" title="21-Apr-20 01:39 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423209601346043904/c2d84d510e6047069e22e41aaf8b6145.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Davecz#3079" data-user-id="423209601346043904"  style="color: rgb(231, 76, 60)" >Davecz</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 01:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="702656984050303108" id="message-702656984050303108">
+                <div class="chatlog__content">
+                    <div class="markdown">@Pojištěni na Pokuty#1676
+- Reklama do pm lidem
+PERMA Ban</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/669931041783545886/702656984025137212/Screenshot_20200423-010848_Discord.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/669931041783545886/702656984025137212/Screenshot_20200423-010848_Discord.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😄" title="😄" src="https://twemoji.maxcdn.com/2/72x72/1f604.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 04:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="702882053968101429" id="message-702882053968101429">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="YUNG THAY#1337">@YUNG THAY</span>
+#1337
+
+- NonRP Injuries
+- NonRP Driving
+- Mixov&#225;n&#237; do voice chatu
+- Na streamu při RP
+
+- ban na měs&#237;c, možnost unbanu v polovině banu. (7.5.2020)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/298147967854968842/e4a02ad31ea0cfa4feeae17943e9e60f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="OzZy#8758" data-user-id="298147967854968842"  style="color: rgb(52, 152, 219)" >OzZy</span>
+
+
+        <span class="chatlog__timestamp">23-Apr-20 04:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="702883838300258334" id="message-702883838300258334">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Dream#3039">@Dream</span>
+#3039
+
+- Asspuling a KOS na NPC sniperkou
+
+7 dn&#237; bez možnosti unbanu</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/327198347813322753/f7666b40cb01295d871c0da7f1e21269.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Andrew#4056" data-user-id="327198347813322753"  style="color: rgb(199, 27, 27)" >Andrew</span>
+
+
+        <span class="chatlog__timestamp">24-Apr-20 01:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="703029206543761469" id="message-703029206543761469">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="!MaXaR!#8702">@!MaXaR!</span>
+#8702
+
+-reklama na server, perma<span class="chatlog__edited-timestamp" title="24-Apr-20 01:52 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Patriczech#9467" data-user-id="353848965361565696"  style="color: rgb(52, 152, 219)" >Patriczech</span>
+
+
+        <span class="chatlog__timestamp">24-Apr-20 05:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="703259306371448913" id="message-703259306371448913">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="JustDannySK#5654">@JustDannySK</span>
+
+- nab&#225;d&#225;n&#237; k metě na streamu
+- v&#237;cekr&#225;t trest&#225;n
+
+3 t&#253;dny bez možnosti předčasn&#233;ho unbanu<span class="chatlog__edited-timestamp" title="24-Apr-20 05:03 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Patriczech#9467" data-user-id="353848965361565696"  style="color: rgb(52, 152, 219)" >Patriczech</span>
+
+
+        <span class="chatlog__timestamp">26-Apr-20 03:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="703962030784380928" id="message-703962030784380928">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Tom&#128081;#7140">@Tom&#128081;</span>
+
+- obch&#225;zen&#237; formul&#225;ře (v&#237;cekr&#225;t zam&#237;tnut a po třech dnech zas&#237;l&#225; znova)
+- na formul&#225;ři uv&#225;d&#237; svůj věk 14 let
+
+- <strong>ban na 1 rok (do 26.04.2021)</strong><span class="chatlog__edited-timestamp" title="26-Apr-20 03:34 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">27-Apr-20 11:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="704443077896700065" id="message-704443077896700065">
+                <div class="chatlog__content">
+                    <div class="markdown">@OtissCZ#2181
+- nofearRP
+nem&#225; ž&#225;dn&#253; předešl&#253; rest
+
+3dny ban nen&#237; možnost unbanu<span class="chatlog__edited-timestamp" title="28-Apr-20 12:30 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516314477042335765/65196be3506c8fed4e35d03b5d747da7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Lussi#2786" data-user-id="516314477042335765"  style="color: rgb(52, 152, 219)" >Lussi</span>
+
+
+        <span class="chatlog__timestamp">28-Apr-20 09:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="704782712896094278" id="message-704782712896094278">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="EARTH#3384">@EARTH</span>
+
+- Nword
+na streamu před lidmi 
+
+3dny ban</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 114 message(s)</div>
+</div>
+
+</body>
+</html>
