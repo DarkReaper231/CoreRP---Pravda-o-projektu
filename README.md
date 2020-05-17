@@ -1,3 +1,4 @@
+@@ -1,26 +0,0 @@
 # CoreRP---Pravda-o-projektu
 
 Aby jste mohli hostovat tento web tak je potřeba udělat pár věcí
